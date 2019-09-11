@@ -29,7 +29,6 @@ import spack.architecture
 import spack.config
 import spack.cmd
 import spack.environment as ev
-import spack.hooks
 import spack.paths
 import spack.repo
 import spack.store
@@ -697,9 +696,6 @@ def main(argv=None):
 
         # many operations will fail without a working directory.
         set_working_dir()
-
-        # pre-run hooks happen after we know we have a valid working dir
-        spack.hooks.pre_run()
 
         # now we can actually execute the command.
         if args.spack_profile or args.sorted_profile:
