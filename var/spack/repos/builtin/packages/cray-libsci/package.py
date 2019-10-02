@@ -13,9 +13,7 @@ class CrayLibsci(Package):
     numerical routines optimized for best performance on Cray systems."""
 
     homepage = "https://docs.nersc.gov/programming/libraries/libsci/"
-    url = "https://docs.nersc.gov/programming/libraries/libsci/"
-
-    version('0.0.0', '')
+    url = "https://docs.nersc.gov/programming/libraries/libsci/fake.tar.gz"
 
     variant("shared", default=True, description="enable shared libs")
     variant("openmp", default=False, description="link with openmp")
@@ -31,8 +29,7 @@ class CrayLibsci(Package):
         'intel': 'INTEL',
     }
 
-    @property
-    def fetcher(self):
+    def install(self, spec, prefix):
         raise InstallError("""This package is intended to be a placeholder for Cray's
 libsci, usually provided via the module system as 'cray-libsci'.
 
@@ -97,6 +94,3 @@ Replace the version numbers with the ones matching the module(s).
         version = self.version
         mod = 'cray-libsci/{0}'.format(version)
         load_module(mod)
-
-    def install(self, spec, prefix):
-        pass
