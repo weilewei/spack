@@ -3,9 +3,6 @@
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
-import os
-
-from spack import *
 from spack.util.module_cmd import (
     load_module, module, get_path_args_from_module_line
 )
