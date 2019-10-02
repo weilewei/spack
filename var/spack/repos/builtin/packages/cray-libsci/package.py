@@ -6,8 +6,9 @@
 import os
 
 from spack import *
-from spack.util.module_cmd import load_module, module
-from spack.util.prefix import Prefix
+from spack.util.module_cmd import (
+    load_module, module, get_path_args_from_module_line
+)
 
 
 class CrayLibsci(Package):
@@ -57,31 +58,12 @@ Replace the version numbers with the ones matching the module(s).
         return "cray-libsci/{0}".format(self.version)
 
     @property
-    def prefix(self):
-        cname = self.canonical_names[self.compiler.name]
+    def external_prefix(self):
         libsci_module = module("show", self.modname).splitlines()
 
-        base_dir = None
-        lib_ver = None
-
         for line in libsci_module:
-            if "CRAY_LIBSCI_BASE_DIR" in line:
-                base_dir = line.split()[-1]  # fails if dir contains ws
-
-            if "PE_LIBSCI_GENCOMPS_{0}_x86_64".format(cname) in line:
-                # the line looks like: PE_LIBSCI_GENCOMPS_GNU_x86_64 71 61 51
-                # check for matching major version match
-                lib_ver = [v for v in line.split()[2:]
-                           if v[0] == str(self.compiler.version[0])][0]
-
-        if base_dir is None or lib_ver is None:
-            return Prefix()
-
-        return Prefix(os.path.join(
-            base_dir,
-            cname,
-            lib_ver,
-            str(self.architecture.target)))
+            if "CRAY_LIBSCI_PREFIX_DIR" in line:
+                return get_path_args_from_module_line(line)[0]
 
     @property
     def blas_libs(self):
