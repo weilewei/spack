@@ -553,7 +553,7 @@ class PackageBase(with_metaclass(PackageMeta, PackageViewMixin, object)):
     @classmethod
     def possible_dependencies(
             cls, transitive=True, expand_virtuals=True, deptype='all',
-            visited=None):
+            visited=None, virtuals=None):
         """Return dict of possible dependencies of this package.
 
         Args:
@@ -563,6 +563,7 @@ class PackageBase(with_metaclass(PackageMeta, PackageViewMixin, object)):
                 possible implementations.
             deptype (str or tuple): dependency types to consider
             visited (set): set of names of dependencies visited so far.
+            virtuals (set): if provided, populate with virtuals seen so far.
 
         Returns:
             (dict): dictionary mapping dependency names to *their*
@@ -592,6 +593,8 @@ class PackageBase(with_metaclass(PackageMeta, PackageViewMixin, object)):
 
             # expand virtuals if enabled, otherwise just stop at virtuals
             if spack.repo.path.is_virtual(name):
+                if virtuals is not None:
+                    virtuals.add(name)
                 if expand_virtuals:
                     providers = spack.repo.path.providers_for(name)
                     dep_names = [spec.name for spec in providers]
@@ -611,7 +614,8 @@ class PackageBase(with_metaclass(PackageMeta, PackageViewMixin, object)):
                     if transitive:
                         dep_cls = spack.repo.path.get_pkg_class(dep_name)
                         dep_cls.possible_dependencies(
-                            transitive, expand_virtuals, deptype, visited)
+                            transitive, expand_virtuals, deptype, visited,
+                            virtuals)
 
         return visited
 
