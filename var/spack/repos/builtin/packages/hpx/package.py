@@ -43,7 +43,7 @@ class Hpx(CMakePackage, CudaPackage):
     variant('tools', default=False, description='Build HPX tools')
     variant('examples', default=False, description='Build examples')
 
-    depends_on('boost')
+    depends_on('boost cxxstd=17')
     depends_on('hwloc')
     depends_on('python', type=('build', 'test', 'run'))
     depends_on('pkgconfig', type='build')
